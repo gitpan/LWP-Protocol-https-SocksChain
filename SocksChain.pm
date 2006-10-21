@@ -1,6 +1,6 @@
 ########################################################################
 #
-# $Id: SocksChain.pm,v 1.2 2006/02/26 18:29:55 gosha Exp $
+# $Id: SocksChain.pm,v 1.3 2006/10/21 19:45:51 gosha Exp $
 #
 # Copyright (C) Igor V. Okunev gosha<at>prv.mts-nn.ru 2005 - 2006
 #
@@ -17,9 +17,9 @@ use LWP::Protocol::http;
 
 @ISA = qw( LWP::Protocol::http );
 
-($VERSION='$Revision: 1.2 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
+($VERSION='$Revision: 1.3 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
 
-$^W = 1;
+local $^W = 1;
 
 my $CRLF = "\015\012";
 
@@ -43,6 +43,8 @@ sub _new_socket
 			PeerHost	=> $host,
 			PeerPort	=> $port,
 			TimeOut		=> $timeout,
+			KeepAlive => !!$conn_cache,
+			SendTE    => 1,
 			$self->_extra_sock_opts($host, $port),
 	);
 

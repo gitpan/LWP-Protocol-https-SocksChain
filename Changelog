@@ -1,4 +1,9 @@
 
+1.3
+	Fix KeepAlive connection support
+
+	Fix global redefinition $^W
+
 1.2
     Change POD documentation
 
