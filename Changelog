@@ -1,4 +1,7 @@
 
+1.4
+	Fix deprecursion bug
+
 1.3
 	Fix KeepAlive connection support
 

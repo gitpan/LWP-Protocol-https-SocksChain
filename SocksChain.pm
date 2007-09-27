@@ -1,6 +1,6 @@
 ########################################################################
 #
-# $Id: SocksChain.pm,v 1.3 2006/10/21 19:45:51 gosha Exp $
+# $Id: SocksChain.pm,v 1.4 2007/09/26 18:37:34 gosha Exp $
 #
 # Copyright (C) Igor V. Okunev gosha<at>prv.mts-nn.ru 2005 - 2006
 #
@@ -17,7 +17,7 @@ use LWP::Protocol::http;
 
 @ISA = qw( LWP::Protocol::http );
 
-($VERSION='$Revision: 1.3 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
+($VERSION='$Revision: 1.4 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
 
 local $^W = 1;
 
@@ -337,13 +337,15 @@ sub _get_sock_info
 #-----------------------------------------------------------
 package LWP::Protocol::https::SocksChain::Socket;
 use Net::SC;
-require IO::Socket::SSL;
-require Net::HTTPS;
+use IO::Socket::SSL;
+use Net::HTTPS;
 use vars qw( @ISA );
-@ISA = (	
-			'LWP::Protocol::http::SocketMethods',
-			'Net::HTTPS'
-		);
+@ISA = (
+		'LWP::Protocol::http::SocketMethods',
+		'Net::HTTPS'
+	   );
+
+sub IO::Socket::SSL::SSL_HANDLE::READ { ${shift()}->read     (@_) }
 
 sub new {
 	my ( $self, %cfg ) = @_;
