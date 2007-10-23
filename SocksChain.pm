@@ -1,6 +1,6 @@
 ########################################################################
 #
-# $Id: SocksChain.pm,v 1.4 2007/09/26 18:37:34 gosha Exp $
+# $Id: SocksChain.pm,v 1.5 2007/10/23 06:13:18 gosha Exp $
 #
 # Copyright (C) Igor V. Okunev gosha<at>prv.mts-nn.ru 2005 - 2006
 #
@@ -17,7 +17,7 @@ use LWP::Protocol::http;
 
 @ISA = qw( LWP::Protocol::http );
 
-($VERSION='$Revision: 1.4 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
+($VERSION='$Revision: 1.5 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
 
 local $^W = 1;
 
@@ -363,7 +363,11 @@ sub new {
 	
 	$obj->http_configure(\%cfg);
 
-	$obj->configure_SSL( \%cfg ) && $obj->connect_SSL($sc->sh);
+	if ( $IO::Socket::SSL::VERSION > 0.97 ) {
+		$obj->configure_SSL( \%cfg ) && $obj->connect_SSL();
+	} else {
+		$obj->configure_SSL( \%cfg ) && $obj->connect_SSL($sc->sh);
+	}
 }
 
 sub http_connect {
@@ -457,7 +461,7 @@ LWP, LWP::Protocol, Net::SC
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005 - 2006 by Igor V. Okunev
+Copyright (C) 2005 - 2007 by Igor V. Okunev
 
 All rights reserved. This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
