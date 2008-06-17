@@ -1,4 +1,7 @@
 
+1.6
+	Added client certificate support ( thanks Andrew Deryabin )
+
 1.5
 	Support IO::Socket::SSL > 0.97
 
@@ -11,5 +14,5 @@
 	Fix global redefinition $^W
 
 1.2
-    Change POD documentation
+	Change POD documentation
 

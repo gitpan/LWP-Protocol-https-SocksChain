@@ -1,6 +1,6 @@
 ########################################################################
 #
-# $Id: SocksChain.pm,v 1.5 2007/10/23 06:13:18 gosha Exp $
+# $Id: SocksChain.pm,v 1.6 2008/06/17 19:43:12 gosha Exp $
 #
 # Copyright (C) Igor V. Okunev gosha<at>prv.mts-nn.ru 2005 - 2006
 #
@@ -17,7 +17,7 @@ use LWP::Protocol::http;
 
 @ISA = qw( LWP::Protocol::http );
 
-($VERSION='$Revision: 1.5 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
+($VERSION='$Revision: 1.6 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
 
 local $^W = 1;
 
@@ -353,6 +353,29 @@ sub new {
 	my $host = $cfg{ PeerHost };
 	my $port = $cfg{ PeerPort };
 
+	#
+	# client certificate support
+	#
+	if ( defined $ENV{HTTPS_KEY_FILE} and not exists $cfg{SSL_key_file} ) {
+		$cfg{SSL_key_file} = $ENV{HTTPS_KEY_FILE};
+	}
+
+	if ( defined $ENV{HTTPS_CA_DIR} and not exists $cfg{SSL_ca_path} ) {
+		$cfg{SSL_ca_path} = $ENV{HTTPS_CA_DIR}; 
+	}
+
+	if ( defined $ENV{HTTPS_CA_FILE} and not exists $cfg{SSL_ca_file} ) {
+		$cfg{SSL_ca_file} = $ENV{HTTPS_CA_FILE};
+	}
+
+	if ( defined $ENV{HTTPS_CERT_FILE} and not exists $cfg{SSL_cert_file} ) {
+		$cfg{SSL_cert_file} = $ENV{HTTPS_CERT_FILE};
+	}
+
+	if ( not exists $cfg{SSL_use_cert} and exists $cfg{SSL_cert_file} ) {
+		$cfg{SSL_use_cert} = 1
+	}
+
 	my $sc = Net::SC->new( %cfg ) || die $!;
 	
 	unless ( ( my $rc = $sc->connect( $host, $port ) ) == SOCKS_OKAY ) {
@@ -438,6 +461,76 @@ LWP::Protocol::https::SocksChain - Speak HTTPs through Net::SC
   ...
  }
 
+ or
+
+ use LWP::UserAgent;
+ use LWP::Protocol::https::SocksChain;
+ LWP::Protocol::implementor( https => 'LWP::Protocol::https::SocksChain' );
+
+ $ENV{HTTPS_CERT_FILE} = "certs/notacacert.pem";
+ $ENV{HTTPS_KEY_FILE}  = "certs/notacakeynopass.pem";
+ $ENV{HTTPS_CA_FILE} = "some_file";
+ $ENV{HTTPS_CA_DIR}  = "some_dir";
+
+ @LWP::Protocol::https::SocksChain::EXTRA_SOCK_OPTS = ( Chain_Len    => 1,
+                                                        Debug        => 0,
+                                                        Random_Chain => 1,
+                                                        Chain_File_Data => [
+                                                           '2x0.41.23.164:1080:::4:383 b/s Argentina',
+                                                           '24.2x2.88.160:1080:::4:1155 b/s Argentina',
+                                                        ],
+                                                        Auto_Save    => 0,
+                                                        Restore_Type => 0 );
+
+ my $ua = LWP::UserAgent->new();
+
+ my $req = HTTP::Request->new(
+              GET => 'https://home.sinn.ru/~gosha/perl-scripts/');
+
+ my $res = $ua->request($req) || die $!;
+
+ if ($res->is_success) {
+  ...
+ } else {
+  ...
+ }
+
+ or
+
+ use LWP::UserAgent;
+ use LWP::Protocol::https::SocksChain;
+ LWP::Protocol::implementor( https => 'LWP::Protocol::https::SocksChain' );
+
+
+ @LWP::Protocol::https::SocksChain::EXTRA_SOCK_OPTS = ( Chain_Len    => 1,
+                                                        Debug        => 0,
+                                                        Random_Chain => 1,
+                                                        Chain_File_Data => [
+                                                           '2x0.41.23.164:1080:::4:383 b/s Argentina',
+                                                           '24.2x2.88.160:1080:::4:1155 b/s Argentina',
+                                                        ],
+                                                        Auto_Save    => 0,
+                                                        Restore_Type => 0,
+														
+                                                        SSL_cert_file => "certs/notacacert.pem",
+                                                        SSL_key_file => "certs/notacakeynopass.pem",
+                                                        SSL_ca_file => "some_file",
+                                                        SSL_ca_dir  => "some_dir",
+														);
+
+ my $ua = LWP::UserAgent->new();
+
+ my $req = HTTP::Request->new(
+              GET => 'https://home.sinn.ru/~gosha/perl-scripts/');
+
+ my $res = $ua->request($req) || die $!;
+
+ if ($res->is_success) {
+  ...
+ } else {
+  ...
+ }
+
 =head1 DESCRIPTION
 
 LWP::Protocol::https::SocksChain enables you to speak HTTPs through SocksChain ( Net::SC ).
@@ -461,7 +554,7 @@ LWP, LWP::Protocol, Net::SC
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005 - 2007 by Igor V. Okunev
+Copyright (C) 2005 - 2008 by Igor V. Okunev
 
 All rights reserved. This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
