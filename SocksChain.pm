@@ -1,6 +1,6 @@
 ########################################################################
 #
-# $Id: SocksChain.pm,v 1.6 2008/06/17 19:43:12 gosha Exp $
+# $Id: SocksChain.pm,v 1.7 2009-11-14 10:26:43 gosha Exp $
 #
 # Copyright (C) Igor V. Okunev gosha<at>prv.mts-nn.ru 2005 - 2006
 #
@@ -17,7 +17,7 @@ use LWP::Protocol::http;
 
 @ISA = qw( LWP::Protocol::http );
 
-($VERSION='$Revision: 1.6 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
+($VERSION='$Revision: 1.7 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
 
 local $^W = 1;
 
@@ -68,7 +68,7 @@ sub _extra_sock_opts  # to be overridden by subclass
 sub request
 {
     my($self, $request, undef, $arg, $size, $timeout) = @_;
-    LWP::Debug::trace('()');
+    #LWP::Debug::trace('()');
 
     $size ||= 4096;
 

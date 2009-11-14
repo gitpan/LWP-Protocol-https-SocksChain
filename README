@@ -25,7 +25,9 @@ SYNOPSIS
       ...
      }
 
+
      or
+
 
      use LWP::UserAgent;
      use LWP::Protocol::https::SocksChain;
@@ -94,6 +96,7 @@ SYNOPSIS
      use LWP::Protocol::https::SocksChain;
      LWP::Protocol::implementor( https => 'LWP::Protocol::https::SocksChain' );
 
+
      @LWP::Protocol::https::SocksChain::EXTRA_SOCK_OPTS = ( Chain_Len    => 1,
                                                             Debug        => 0,
                                                             Random_Chain => 1,
@@ -103,8 +106,8 @@ SYNOPSIS
                                                             ],
                                                             Auto_Save    => 0,
                                                             Restore_Type => 0,
-                                                                                                                
-                                                            SSL_cert_file => "certs/notacacert.pem",
+                                                                                                                    
+                                                        SSL_cert_file => "certs/notacacert.pem",
                                                             SSL_key_file => "certs/notacakeynopass.pem",
                                                             SSL_ca_file => "some_file",
                                                             SSL_ca_dir  => "some_dir",
