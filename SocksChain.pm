@@ -1,6 +1,6 @@
 ########################################################################
 #
-# $Id: SocksChain.pm,v 1.7 2009-11-14 10:26:43 gosha Exp $
+# $Id: SocksChain.pm,v 1.8 2009-11-21 20:25:47 gosha Exp $
 #
 # Copyright (C) Igor V. Okunev gosha<at>prv.mts-nn.ru 2005 - 2006
 #
@@ -17,7 +17,7 @@ use LWP::Protocol::http;
 
 @ISA = qw( LWP::Protocol::http );
 
-($VERSION='$Revision: 1.7 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
+($VERSION='$Revision: 1.8 $')=~s/^\S+\s+(\S+)\s+.*/$1/;
 
 local $^W = 1;
 
@@ -68,7 +68,6 @@ sub _extra_sock_opts  # to be overridden by subclass
 sub request
 {
     my($self, $request, undef, $arg, $size, $timeout) = @_;
-    #LWP::Debug::trace('()');
 
     $size ||= 4096;
 
@@ -145,7 +144,6 @@ sub request
 	
 	die $! unless defined($n);
 	die "short write" unless $n == length($req_buf);
-	#LWP::Debug::conns($req_buf);
     }
 
     my($code, $mess, @junk);
@@ -296,7 +294,6 @@ sub request
 	    if (($peer_http_version eq "1.1" && !$connection{close}) ||
 		$connection{"keep-alive"})
 	    {
-		LWP::Debug::debug("Keep the http connection to $host:$port");
 		$conn_cache->deposit("http", "$host:$port", $socket);
 	    }
 	}

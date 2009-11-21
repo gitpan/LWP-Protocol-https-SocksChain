@@ -1,4 +1,7 @@
 
+1.8
+	cleanup LWP::Debug ( Bug fixed: 51786 )
+
 1.7
 	Cleanup for LWP::Debug::trace
 
